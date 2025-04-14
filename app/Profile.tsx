@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Avatar, Title, Caption, Text, Button, useTheme, Card } from 'react-native-paper';
+import { View, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { Avatar, Title, Caption, Text, Button, useTheme, Card, TouchableRipple } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+  const [profileImage, setProfileImage] = React.useState<string | null>(null);
 
   const handleSignOut = async () => {
     try {
@@ -18,17 +20,94 @@ export default function ProfileScreen() {
     }
   };
 
+  const takeProfilePicture = async () => {
+    // Request camera permissions
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (status !== 'granted') {
+      alert('Sorry, we need camera permissions to take a profile picture!');
+      return;
+    }
+    
+    // Launch camera
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio for profile picture
+      quality: 0.7,   // Slightly compressed for better performance
+    });
+    
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setProfileImage(result.assets[0].uri);
+      // Here you would typically upload this image to your storage
+      // uploadProfilePicture(result.assets[0].uri);
+    }
+  };
+
+  // Alternative option to pick from gallery
+  const pickProfilePicture = async () => {
+    // Request library permissions
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (status !== 'granted') {
+      alert('Sorry, we need media library permissions to select a profile picture!');
+      return;
+    }
+    
+    // Launch image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+    
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setProfileImage(result.assets[0].uri);
+      // Here you would typically upload this image to your storage
+      // uploadProfilePicture(result.assets[0].uri);
+    }
+  };
+
+  // Function to show options for profile picture
+  const handleProfilePicturePress = () => {
+    // For a more complete solution, you could use a library like 
+    // react-native-action-sheet to show options
+    Alert.alert(
+      "Update Profile Picture",
+      "Choose an option",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Take Photo", onPress: takeProfilePicture },
+        { text: "Choose from Library", onPress: pickProfilePicture },
+        
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
-      {/* Profile Card */}
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.userInfoSection}>
-            <Avatar.Text
-              size={80}
-              label="AB"
-              style={{ backgroundColor: colors.primary }}
-            />
+            <TouchableRipple 
+              onPress={handleProfilePicturePress}
+              rippleColor="rgba(0, 0, 0, .32)"
+            >
+              {profileImage ? (
+                <Avatar.Image
+                  size={80}
+                  source={{ uri: profileImage }}
+                  style={{ backgroundColor: colors.primary }}
+                />
+              ) : (
+                <Avatar.Text
+                  size={80}
+                  label="AB"
+                  style={{ backgroundColor: colors.primary }}
+                />
+              )}
+            </TouchableRipple>
+           
             <View style={{ marginLeft: 20 }}>
               <Title style={styles.title}>Aman Bansal</Title>
               <Caption style={styles.caption}>@amanban</Caption>
