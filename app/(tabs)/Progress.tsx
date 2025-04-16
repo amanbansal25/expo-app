@@ -10,10 +10,6 @@ const HomeRoute = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text variant="headlineMedium" style={styles.headerText}>
-        PROGRESS DASHBOARD
-      </Text>
-
       <Text variant="titleMedium" style={styles.sectionTitle}>Featured</Text>
       <FlatList
         horizontal
@@ -23,7 +19,7 @@ const HomeRoute = () => {
         keyExtractor={(_, index) => `horizontal-${index}`}
         renderItem={({ index }) => (
           <View style={styles.horizontalCard}>
-            <Card />
+             <Card />
           </View>
         )}
       />

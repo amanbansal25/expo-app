@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase'; // Adjust path as needed
+import * as localAuthentication from 'expo-local-authentication';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -12,6 +13,13 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(()=>{
+    async function authenticate(){
+      const result = await localAuthentication.authenticateAsync();
+    }
+    authenticate()
+  }, [])
 
   const handleLogin = async () => {
     if (!email || !password) {
