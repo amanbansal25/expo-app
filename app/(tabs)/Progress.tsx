@@ -2,27 +2,50 @@ import React from "react";
 import { ScrollView, View, StyleSheet, FlatList } from 'react-native';
 import { Text, Divider } from 'react-native-paper';
 import Card from '@/components/ui/Card';
+import SubjectCard from '@/components/ui/SubjectCards';
 import Chart from '@/components/ui/Chart';
+import VideoCoursesCarousel from '@/components/ui/LectureWeb';
 
 const HomeRoute = () => {
   const horizontalCards = Array.from({ length: 6 });
   const verticalCards = Array.from({ length: 6 });
 
+  const subjects = [ {
+    id: 1,
+    subjectTitle: "Physics",
+    topics: 20
+  },
+  {
+    id: 2,
+    subjectTitle: "Chemstry",
+    topics: 10
+  },
+  {
+    id: 3,
+    subjectTitle: "Maths",
+    topics: 21
+  },
+]
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text variant="titleMedium" style={styles.sectionTitle}>Featured</Text>
+      <Text variant="titleMedium" style={styles.sectionTitle}>Subjects</Text>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.horizontalScroll}
-        data={horizontalCards}
+        data={subjects}
         keyExtractor={(_, index) => `horizontal-${index}`}
-        renderItem={({ index }) => (
+        renderItem={({ item }) => (
           <View style={styles.horizontalCard}>
-             <Card />
+             <SubjectCard subjectTitle={item.subjectTitle} topics={item.topics} />
           </View>
         )}
       />
+
+      <Divider style={{ marginVertical: 20 }} />
+
+      <VideoCoursesCarousel />
 
       <Divider style={{ marginVertical: 20 }} />
 
@@ -72,6 +95,8 @@ const styles = StyleSheet.create({
   horizontalCard: {
     width: 160,
     marginRight: 10,
+    marginTop: 10,
+    marginBottom:10,
   },
   container: {
     flexDirection: 'row',

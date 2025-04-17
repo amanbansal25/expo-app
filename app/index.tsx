@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, useTheme } from 'react-native-paper';
+import { TextInput, Button, Text, useTheme, Divider } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase'; // Adjust path as needed
@@ -44,6 +44,10 @@ export default function LoginScreen() {
   const handleSignupRedirect = () => {
     router.push('/Signup');
   };
+  
+  const handlePinLogin = () => {
+    router.push('/pin-login');
+  };
 
   return (
     <View style={styles.container}>
@@ -81,9 +85,24 @@ export default function LoginScreen() {
       <Button mode="contained" onPress={handleLogin} style={styles.button}>
         Login
       </Button>
+      
+      <View style={styles.dividerContainer}>
+        <Divider style={styles.divider} />
+        <Text style={styles.orText}>OR</Text>
+        <Divider style={styles.divider} />
+      </View>
+
+      <Button 
+        mode="outlined" 
+        onPress={handlePinLogin} 
+        style={styles.pinButton}
+        icon="pin"
+      >
+        Login with PIN
+      </Button>
 
       <Button mode="text" onPress={handleSignupRedirect} style={styles.signupButton}>
-        Don’t have an account? Sign Up
+        Don't have an account? Sign Up
       </Button>
     </View>
   );
@@ -107,6 +126,23 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+    paddingVertical: 5,
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+  },
+  orText: {
+    marginHorizontal: 10,
+    color: '#666',
+  },
+  pinButton: {
+    marginBottom: 15,
     paddingVertical: 5,
   },
   signupButton: {
